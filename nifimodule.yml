@@ -1,0 +1,22 @@
+FROM ubuntu:18.04
+ 
+WORKDIR /app/
+ 
+RUN apt update && apt upgrade
+RUN apt install openjdk-8-jdk -y
+RUN apt install wget -y
+RUN wget http://apache.proserve.nl/nifi/1.7.1/nifi-1.7.1-bin.tar.gz 
+RUN tar zxvf nifi-1.7.1-bin.tar.gz
+ 
+COPY package*.json ./
+ 
+RUN apt install npm -y
+RUN npm install --production
+ 
+EXPOSE 8080/tcp
+ 
+COPY app.js ./
+ 
+WORKDIR /app/nifi-1.7.1/bin
+ 
+CMD ["./nifi.sh", "run"]
